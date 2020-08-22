@@ -9,6 +9,7 @@ Use in web-browser console (`F12` key).
 * [Search activities by course](#search-activities-by-course)
 * [Search activities by device](#search-activities-by-device)
 * [Sum distance by device](#sum-distance-by-device)
+* [Delete activity request](#delete-activity-request)
 * [Filters for the Segments' Map](#filters-for-the-segments-map)
 
 
@@ -224,6 +225,17 @@ jQuery.getJSON(
         console.dir('Sum:', distance);
     }
 );
+```
+
+
+## Delete activity request
+
+```javascript
+fetch('https://connect.garmin.com/modern/proxy/activity-service/activity/' + act['activityId'],
+{
+    "headers": { 'Accept': 'application/json', 'NK': 'NT', "X-HTTP-Method-Override": "DELETE" },
+    "method": "POST"
+});
 ```
 
 
