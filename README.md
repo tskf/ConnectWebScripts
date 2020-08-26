@@ -58,11 +58,11 @@ jQuery.getJSON(
 );
 ```
 
-* Download link can me modified for FIT or GPX or TCX:
+* FIT or GPX or TCX:
 ```
-connect.garmin.com/modern/proxy/download-service/files/activity/
-connect.garmin.com/modern/proxy/download-service/export/gpx/activity/
-connect.garmin.com/modern/proxy/download-service/export/tcx/activity/
+.../download-service/files/activity/
+.../download-service/export/gpx/activity/
+.../download-service/export/tcx/activity/
 ```
 
 ## Change activity's access
