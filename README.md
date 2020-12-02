@@ -13,7 +13,10 @@ Use in web-browser console (`F12` key).
   * [by course](#search-activities-by-course)
   * [by device](#search-activities-by-device)
 * [Sum distance by device](#sum-distance-by-device)
-* [Delete activity request](#delete-activity-request)
+* Delete request:
+  * [activity](#delete-request-activity)
+  * [workout](#delete-request-workout)
+* [Search workouts](#search-workouts)
 * [Filters for the Segments' Map](#filters-for-the-segments-map)
 
 
@@ -75,7 +78,7 @@ jQuery.getJSON(
 * Add-on translates URLs of Connect's copy of OSM and redirects to Original OSM, to always show the latest version of the map.
 
 ### manifest.json
-```javascript
+```
 {
   "description": "Redirects Connect's copy of OSM to Original OSM.",
   "manifest_version": 2,
@@ -177,7 +180,7 @@ jQuery.getJSON(
 ## Change activity's gear
 
 * Set `if` `typeKey` to `gravel_cycling` or `road_biking`, or add other search conditions.
-* Replace `!!!GEAR_ID!!!` by id from Gears' page - choose Edit and copy from a link.
+* Replace `!!!GEAR_ID!!!` by id from Gears' page (choose Edit and copy from a link).
 
 ### Add:
 ```javascript
@@ -315,7 +318,7 @@ jQuery.getJSON(
 ```
 
 
-## Delete activity request
+## Delete request: activity
 
 ```javascript
 fetch('https://connect.garmin.com/modern/proxy/activity-service/activity/' + act['activityId'],
@@ -323,6 +326,34 @@ fetch('https://connect.garmin.com/modern/proxy/activity-service/activity/' + act
     "headers": { 'Accept': 'application/json', 'NK': 'NT', "X-HTTP-Method-Override": "DELETE" },
     "method": "POST"
 });
+```
+
+## Delete request: workout
+
+```javascript
+fetch('https://connect.garmin.com/modern/proxy/workout-service/workout/' + wo['workoutId'],
+{
+    "headers": { 'Accept': 'application/json', 'NK': 'NT', "X-HTTP-Method-Override": "DELETE" },
+    "method": "POST"
+});
+```
+
+
+## Search workouts
+
+```javascript
+jQuery.getJSON(
+    'https://connect.garmin.com/modern/proxy/workout-service/workouts?limit=2',
+    function(wo_list)
+    {
+        wo_list.forEach(
+        function(wo)
+            {
+                console.dir(wo['workoutId'], wo['workoutName'], wo['sportType']['sportTypeKey'], wo['updateDate'], wo['createdDate']);
+            }
+        );
+    }
+);
 ```
 
 
