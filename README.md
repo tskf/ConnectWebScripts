@@ -87,7 +87,7 @@ jQuery.getJSON(
 
   "permissions": [
     "webRequest", "webRequestBlocking",
-	"https://connectosm16.azureedge.net/*", "https://connect.garmin.com/*" ],
+    "https://connectosm16.azureedge.net/*", "https://connect.garmin.com/*" ],
 
   "background": { "scripts": ["background.js"] },
 
@@ -99,17 +99,17 @@ jQuery.getJSON(
 ```javascript
 chrome.webRequest.onBeforeRequest.addListener
 (
-	function(e)
-	{
-		var url = new URL(e.url);
-			url = url.pathname.split('.')[0].split('/');
-		var u1 = parseInt(url[1].slice(1),10),
-			u2 = parseInt(url[2].slice(1),16),
-			u3 = parseInt(url[3].slice(1),16);
-		return {redirectUrl:'https://tile.openstreetmap.org/'+u1+'/'+u3+'/'+u2+'.png'};
-	},
-	{urls: ['https://connectosm16.azureedge.net/*']},
-	['blocking']
+    function(e)
+    {
+        var url = new URL(e.url);
+            url = url.pathname.split('.')[0].split('/');
+        var u1 = parseInt(url[1].slice(1),10),
+            u2 = parseInt(url[2].slice(1),16),
+            u3 = parseInt(url[3].slice(1),16);
+        return {redirectUrl:'https://tile.openstreetmap.org/'+u1+'/'+u3+'/'+u2+'.png'};
+    },
+    {urls: ['https://connectosm16.azureedge.net/*']},
+    ['blocking']
 )
 ```
 
