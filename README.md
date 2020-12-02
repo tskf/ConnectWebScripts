@@ -3,11 +3,15 @@
 Use in web-browser console (`F12` key).
 
 * [Download all activities](#download-all-activities)
-* [Change activity's access](#change-activitys-access)
-* [Change activity's type](#change-activitys-type)
-* [Search activities without gear](#search-activities-without-gear)
-* [Search activities by course](#search-activities-by-course)
-* [Search activities by device](#search-activities-by-device)
+* [Redirect to original OSM](#redirect-to-original-osm)
+* Change activity's:
+  * [access](#change-activitys-access)
+  * [type](#change-activitys-type)
+  * [gear](#change-activitys-gear)
+* Search activities:
+  * [without gear](#search-activities-without-gear)
+  * [by course](#search-activities-by-course)
+  * [by device](#search-activities-by-device)
 * [Sum distance by device](#sum-distance-by-device)
 * [Delete activity request](#delete-activity-request)
 * [Filters for the Segments' Map](#filters-for-the-segments-map)
@@ -64,6 +68,48 @@ jQuery.getJSON(
 .../download-service/export/gpx/activity/
 .../download-service/export/tcx/activity/
 ```
+
+
+## Redirect to original OSM
+
+* Add-on translates URLs of Connect's copy of OSM and redirects to Original OSM, to always show the latest version of the map.
+
+### manifest.json
+```javascript
+{
+  "description": "Redirects Connect's copy of OSM to Original OSM.",
+  "manifest_version": 2,
+  "name": "connect-to-original-osm",
+  "version": "1.0",
+
+  "permissions": [
+    "webRequest", "webRequestBlocking",
+	"https://connectosm16.azureedge.net/*", "https://connect.garmin.com/*" ],
+
+  "background": { "scripts": ["background.js"] },
+
+  "browser_specific_settings": { "gecko": {"id": "connect.osm@original.osm"} }
+}
+```
+
+### background.js
+```javascript
+chrome.webRequest.onBeforeRequest.addListener
+(
+	function(e)
+	{
+		var url = new URL(e.url);
+			url = url.pathname.split('.')[0].split('/');
+		var u1 = parseInt(url[1].slice(1),10),
+			u2 = parseInt(url[2].slice(1),16),
+			u3 = parseInt(url[3].slice(1),16);
+		return {redirectUrl:'https://tile.openstreetmap.org/'+u1+'/'+u3+'/'+u2+'.png'};
+	},
+	{urls: ['https://connectosm16.azureedge.net/*']},
+	['blocking']
+)
+```
+
 
 ## Change activity's access
 
@@ -125,6 +171,41 @@ jQuery.getJSON(
         );
     }
 );
+```
+
+
+## Change activity's gear
+
+* Set `if` `typeKey` to `gravel_cycling` or `road_biking`, or add other search conditions.
+* Replace `!!!GEAR_ID!!!` by id from Gears' page - choose Edit and copy from a link.
+
+### Add:
+```javascript
+jQuery.getJSON(
+    'https://connect.garmin.com/modern/proxy/activitylist-service/activities/search/activities?limit=2',
+    function(act_list)
+    {
+        act_list.forEach(
+        function(act)
+            {
+                if(act['activityType']['typeKey'] === 'mountain_biking')
+				    {
+                        fetch('https://connect.garmin.com/modern/proxy/gear-service/gear/link/!!!GEAR_ID!!!/activity/' + act['activityId'],
+                        {
+                            'headers': { 'NK': 'NT', 'X-HTTP-Method-Override': 'PUT' },
+                            'method': 'POST'
+                        });
+                        console.dir(act['activityId'], act['activityName'], act['startTimeLocal']);
+                    }
+            }
+        );
+    }
+);
+```
+
+### Delete:
+```
+.../gear/unlink/...
 ```
 
 
